@@ -37,6 +37,15 @@
   
   ![2](img/duochongjiazai.png)
   
+  添加两个例子(图中虚拟机已经完成第二步网卡配置）：
+  - xp系统
+ 
+    ![2](img/duochongjiazai_xp.png)
+    
+  - debian系统
+  
+    ![2](img/duochongjiazai_debian.png)
+  
 - 网卡配置
 
   - 对于作为网关的Debian虚拟机，设置四片网卡如下：
@@ -137,26 +146,26 @@
 #### 4.靶机的所有对外上下行流量必须经过网关
 - 先在网关Debian虚拟机上安装tcpdump
 
-```
-apt update
-apt install tcpdump
-```
+  ```
+  apt update
+  apt install tcpdump
+  ```
+  
+- 然后进行网络抓包。
 
-然后进行网络抓包。
+  ```
+  sudo tcpdump -i [希望抓取的网卡名称] -n -w [数据保存为的文件名称]
+  ```
 
-```
-sudo tcpdump -i [希望抓取的网卡名称] -n -w [数据保存为的文件名称]
-```
+  ![2](img/wireshark1.png)
 
-![2](img/wireshark1.png)
+- 启用命令后，应该在相应网段的虚拟机上进行网络访问,这里以在debian_victim2中ping百度网站为例。
 
-启用命令后，应该在相应网段的虚拟机上进行网络访问,这里以在debian_victim2中ping百度网站为例。
+  ![2](img/wireshark2.png)
 
-![2](img/wireshark2.png)
+- 利用```scp```命令将文件传输到本地，在wireshark中进行分析，发现流量确实从网关通过。
 
-利用```scp```命令将文件传输到本地，在wireshark中进行分析，发现流量确实从网关通过。
-
-![2](img/wireshark3.png)
+  ![2](img/wireshark3.png)
 
 #### 5.所有节点均可以访问互联网
 
@@ -192,8 +201,14 @@ sudo tcpdump -i [希望抓取的网卡名称] -n -w [数据保存为的文件名
     ![2](img/error_kalilogin.png)
 
   - 解决方案：用户名```kali```,密码```kali```
+ 
+- 无法远程登录root
+
+  - 发现root账户不能通过ssh在本地登录，显示```Permission denied```。
+  - 解决方案：搜索后得到，可以修改```sshd_config```中的```PermitRootLogin yes```，但鉴于安全风险，root账户一般不建议开启远程登录。最后采取的折中策略是，新建用户```robert```，并赋予sudo权力。（但因为后来放弃使用远程ssh登录，直接在虚拟机的小黑框里面输入指令，所以这个用户除了传输文件的时候都没有派上用场······）
 
 ## 参考资料
 - [给非root用户赋予sudo权力](https://www.myfreax.com/how-to-add-and-delete-users-on-debian-9/#:~:text=%E5%9C%A8Debian%E4%B8%AD%EF%BC%8C%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%8F%AF%E7%94%A8%E4%BA%8E%E5%88%9B%E5%BB%BA%E6%96%B0%E7%94%A8%E6%88%B7%E5%B8%90%E6%88%B7%E7%9A%84%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7%EF%BC%9A%20useradd%20%E5%92%8C%20adduser%20%E3%80%82%20useradd%20%E6%98%AF%E7%94%A8%E4%BA%8E%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E7%9A%84%E4%BD%8E%E7%BA%A7%E5%AE%9E%E7%94%A8%E7%A8%8B%E5%BA%8F%EF%BC%8C%E8%80%8C%20adduser,%E6%98%AF%E7%94%A8Perl%E7%BC%96%E5%86%99%E7%9A%84%20useradd%20%E7%9A%84%E5%8F%8B%E5%A5%BD%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%89%8D%E7%AB%AF%E3%80%82%20%E8%A6%81%E4%BD%BF%E7%94%A8%20adduser%20%E5%91%BD%E4%BB%A4%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%90%8D%E4%B8%BA%20username%20%E7%9A%84%E6%96%B0%E7%94%A8%E6%88%B7%E5%B8%90%E6%88%B7%EF%BC%8C%E8%AF%B7%E8%BF%90%E8%A1%8C%EF%BC%9A)
+- [使用root用户通过SSH登录Linux实例时报“Permission denied, please try again”的错误](https://help.aliyun.com/document_detail/41487.html)
 - [Kali Linux初始账号和密码不知道怎么办？](https://www.bilibili.com/read/cv10217865/)
 - [linux命令scp(复制文件和目录)详解及cp和scp命令的使用方法](https://blog.csdn.net/qq_34374664/article/details/81289540)
