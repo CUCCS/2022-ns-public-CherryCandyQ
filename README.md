@@ -109,15 +109,15 @@
 1. scapy中无权限
 
 - 问题：
-        在初次登录scapy时，当输入
+     在初次登录scapy时，当输入
 
-        ```python
+        ```bash
          pkt = promiscping("172.16.222.120")
         ```
   
-        出现了无权限的报错。
+      出现了无权限的报错。
   
-        ![2](img4/error_root.png)
+      ![2](img4/error_root.png)
   
 - 解决方案：
         利用sudo su命令切换为root账号。
@@ -125,13 +125,13 @@
 2. ARP缓存没有变化。
 
 - 问题：
-        在第一次把伪造的 ARP 响应数据包发送给受害者主机时，我使用了文档中所提的sendp命令。
+     在第一次把伪造的 ARP 响应数据包发送给受害者主机时，我使用了文档中所提的sendp命令。
     
-        ![2](img4/error_send.png)
+     ![2](img4/error_send.png)
     
-        但是靶机上的ARP缓存没有发生任何变化。
+     但是靶机上的ARP缓存没有发生任何变化。
         
-        ![2](img4/error_ipneigh.png)
+     ![2](img4/error_ipneigh.png)
         
 - 解决方案：根据资料，将```sendp```改为```send```即可。原因可能是因为ARP协议独立于第二、第三层的特殊性，sendp是第二层的工具，而send是第三层的工具。
 
