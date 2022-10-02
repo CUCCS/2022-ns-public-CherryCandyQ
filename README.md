@@ -64,7 +64,7 @@
 
     然后发送ARP广播请求和相应数据包。
 
-    ```bash
+    ```python
     # 发送这个 ARP 广播请求
     recved = srp(arpbroadcast, timeout=2)
 
@@ -84,7 +84,7 @@
   
 2.  恢复受害者主机的ARP缓存记录，需要攻击者主机假装网关给受害者发送：
 
-    ![2](img4/2_re.png)
+    ![2](img4/2_restore.png)
 
     在受害者主机上，通过ping网关刷新记录。
 
