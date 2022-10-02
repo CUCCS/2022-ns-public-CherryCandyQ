@@ -24,7 +24,7 @@
 
 1. 首先在攻击者主机上装好python3和scapy。
 
-    ```bash
+    ```python
     #安装python3
     sudo apt update
     sudo apt install python3 python3-pip
@@ -88,16 +88,16 @@
 
     在受害者主机上，通过ping网关刷新记录。
 
-     ![2](img4/2_success.png)
+    ![2](img4/2_success.png)
    
 
 ### 实验三（可选）：使用自动化工具完成 ARP 投毒劫持实验
   
-    在攻击者的scapy终端输入以下函数：
+1.  在攻击者的scapy终端输入以下函数：
 
     ![2](img4/3_kali.png)
 
-    结果如图：
+2.  结果如图：
 
     ![2](img4/3_debian_vm.png)
 
@@ -109,22 +109,24 @@
 1. scapy中无权限
 
 - 问题：
-     在初次登录scapy时，当输入
+     在初次登录scapy时，当输入:
 
-        ```bash
-         pkt = promiscping("172.16.222.120")
-        ```
+     ```python
+     pkt = promiscping("172.16.222.120")
+     ```
   
-      出现了无权限的报错。
+     出现了无权限的报错。
   
-      ![2](img4/error_root.png)
+     ![2](img4/error_root.png)
   
 - 解决方案：
-        利用sudo su命令切换为root账号。
+
+     利用sudo su命令切换为root账号。
   
 2. ARP缓存没有变化。
 
 - 问题：
+
      在第一次把伪造的 ARP 响应数据包发送给受害者主机时，我使用了文档中所提的sendp命令。
     
      ![2](img4/error_send.png)
