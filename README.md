@@ -34,9 +34,9 @@
     ```
 #### 3.先述知识
 - 端口状态
-    开放✅
-    关闭⛔
-    被过滤⚠
+    - 开放✅
+    - 关闭⛔
+    - 被过滤⚠
 
 ## 实验过程
 #### 1. TCP connect scan
@@ -65,29 +65,46 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/tcp_connect_closed_atk.png)
+        
         kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/tcp_connect_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/tcp_connect_filered_atk.png)
+        
         kali_victim1-wireshark：只收到一个TCP包，靶机无反应，证明端口处于被过滤⚠状态，符合预期。
+        
         ![2](img5/tcp_connect_filered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/tcp_connect_open_atk.png)
+        
         kali_victim1-wireshark：收到SYN/ACK数据包，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/tcp_connect_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_tcp_connect_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_tcp_connect_filered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_tcp_connect_open_atk.png)
 
 #### 2. TCP stealth scan
@@ -124,30 +141,48 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/tcp_stealthscan_closed_atk.png)
+        
         kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/tcp_stealthscan_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/tcp_stealthscan_filtered_atk.png)
+        
         kali_victim1-wireshark：只收到一个SYN包,证明端口处于被过滤⚠状态，符合预期。
+        
         ![2](img5/tcp_stealthscan_filtered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/tcp_stealthscan_open_atk.png)
+        
         kali_victim1-wireshark：收到SYN/ACK数据包，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/tcp_stealthscan_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_tcp_stealth_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_tcp_stealth_filtered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_tcp_stealth_open_atk.png)
+        
 
 #### 3. TCP Xmas scan
 ##### I.编程实现
@@ -180,30 +215,48 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/tcp_xmasscan_closed_atk.png)
+        
         kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/tcp_xmasscan_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/tcp_xmasscan_filtered_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        
         ![2](img5/tcp_xmasscan_filtered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/tcp_xmasscan_open_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/tcp_xmasscan_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_tcp_xmasscan_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_tcp_xmasscan_filtered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_tcp_xmasscan_open_atk.png)
+        
 
 #### 4. TCP fin scan
 ##### I.编程实现
@@ -236,29 +289,46 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/tcp_finscan_closed_atk.png)
+        
         kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/tcp_finscan_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/tcp_finscan_filtered_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        
         ![2](img5/tcp_finscan_filtered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/tcp_finscan_open_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/tcp_finscan_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_tcp_finscan_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_tcp_finscan_filtered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_tcp_finscan_open_atk.png)
 
 #### 5. TCP null scan
@@ -292,29 +362,47 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/tcp_null_closed_atk.png)
+        
         kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/tcp_null_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
+        
         ![2](img5/tcp_null_filtered_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        
         ![2](img5/tcp_null_filtered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/tcp_null_open_atk.png)
+        
         kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/tcp_null_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_tcp_null_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_tcp_null_filtered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_tcp_null_open_atk.png)
 
 #### 6. TCP UDP scan
@@ -354,34 +442,54 @@
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/udp_closed_atk.png)
+        
         kali_victim1-wireshark：收到ICMP“端口不可达”的包，证明端口处于关闭⛔状态，符合预期。
+        
         ![2](img5/udp_closed_ws.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/udp_filtered_atk.png)
+        
         kali_victim1-wireshark：只收到了一个UDP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        
         ![2](img5/udp_filtered_ws.png) 
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/udp_open_atk.png)
+        
         kali_victim1-wireshark：只收到了一个UDP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        
         ![2](img5/udp_open_ws.png) 
+        
 ##### II.nmap实现
 - ##### 结果
     - ###### closed
         kali_attacker2
+        
         ![2](img5/nmap_udp_closed_atk.png)
+        
     - ###### filtered
         kali_attacker2
+        
         ![2](img5/nmap_udp_filtered_atk.png)
+        
     - ###### open
         kali_attacker2
+        
         ![2](img5/nmap_udp_open_atk.png)
+        
 ## 实验问题与解决方案
 #### UDP端口无法打开
 - 问题：在用UDPscan或者nmap复刻时都发现，如果kali_victim1只输入`sudo ufw enable && ufw allow 53/udp`,结果仍显示端口关闭/端口不可达。下图为开启端口后出现的结果：
+
     ![2](img5/error1_udp_open_atk.png)
+    
 - 解决方案：因为DNS服务基于UDP，在53端口提供服务，所以需要安装dnsmasq服务以开启udp端口。
     ```bash
     sudo apt install dnsmasq
