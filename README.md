@@ -43,6 +43,8 @@
 ##### I.编程实现
 - ##### 代码
     ```bash
+    #文件：tcp_connect_scan.py
+
     #! /usr/bin/python
 
     from scapy.all import *
@@ -61,19 +63,335 @@
             print("Closed")
     ```
 - ##### 结果
-    ###### closed
-    kali-attacker2
-    
+    - ###### closed
+        kali_attacker2
+        ![2](img5/tcp_connect_closed_atk.png)
+        kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/tcp_connect_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/tcp_connect_filered_atk.png)
+        kali_victim1-wireshark：只收到一个TCP包，靶机无反应，证明端口处于被过滤⚠状态，符合预期。
+        ![2](img5/tcp_connect_filered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/tcp_connect_open_atk.png)
+        kali_victim1-wireshark：收到SYN/ACK数据包，证明端口处于开放✅状态，符合预期。
+        ![2](img5/tcp_connect_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_tcp_connect_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_tcp_connect_filered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_tcp_connect_open_atk.png)
 
+#### 2. TCP stealth scan
+##### I.编程实现
+- ##### 代码
+    ```bash
+    #文件：Tcp_stealth_scan.py
+
+    #! /usr/bin/python
+
+    import logging
+    logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+    from scapy.all import *
+
+    dst_ip = "172.16.111.124"
+    src_port = RandShort()
+    dst_port = 8083
+
+    tcpstealthscan_pkts = sr1(
+        IP(dst=dst_ip)/TCP(sport=src_port, dport=dst_port, flags="S"), timeout=10)
+    if tcpstealthscan_pkts is None:
+        print("Filtered")
+    elif(tcpstealthscan_pkts.haslayer(TCP)):
+        if(tcpstealthscan_pkts.getlayer(TCP).flags == 0x12):
+            send_rst = sr(IP(dst=dst_ip)/TCP(sport=src_port,dport=dst_port, flags="R"), timeout=10)
+            print("Open")
+        elif (tcpstealthscan_pkts.getlayer(TCP).flags == 0x14):
+            print("Closed")
+    elif(tcpstealthscan_pkts.haslayer(ICMP)):
+        if(int(tcpstealthscan_pkts.getlayer(ICMP).type) == 3 and int(tcpstealthscan_pkts.getlayer(ICMP).code) in [1, 2, 3, 9, 10, 13]):
+            print("Filtered")
+    ```
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/tcp_stealthscan_closed_atk.png)
+        kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/tcp_stealthscan_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/tcp_stealthscan_filtered_atk.png)
+        kali_victim1-wireshark：只收到一个SYN包,证明端口处于被过滤⚠状态，符合预期。
+        ![2](img5/tcp_stealthscan_filtered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/tcp_stealthscan_open_atk.png)
+        kali_victim1-wireshark：收到SYN/ACK数据包，证明端口处于开放✅状态，符合预期。
+        ![2](img5/tcp_stealthscan_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_tcp_stealth_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_tcp_stealth_filtered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_tcp_stealth_open_atk.png)
+
+#### 3. TCP Xmas scan
+##### I.编程实现
+- ##### 代码
+    ```bash
+    #文件：tcp_xmas_scan.py
+
+    #! /usr/bin/python
+
+    import logging
+    logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+    from scapy.all import *
+
+    dst_ip = "172.16.111.124"
+    src_port = RandShort()
+    dst_port = 8083
+
+    tcpxmasscan_pkts = sr1(
+        IP(dst=dst_ip)/TCP(dport=dst_port, flags="FPU"), timeout=10)
+    if tcpxmasscan_pkts is None:
+        print("Open|Filtered")
+    elif(tcpxmasscan_pkts.haslayer(TCP)):
+        if(tcpxmasscan_pkts.getlayer(TCP).flags == 0x14):
+            print("Closed")
+    elif(tcpxmasscan_pkts.haslayer(ICMP)):
+        if(int(tcpxmasscan_pkts.getlayer(ICMP).type) == 3 and int(tcpxmasscan_pkts.getlayer(ICMP).code) in [1, 2, 3, 9, 10, 13]):
+            print("Filtered") 
+    ```
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/tcp_xmasscan_closed_atk.png)
+        kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/tcp_xmasscan_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/tcp_xmasscan_filtered_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        ![2](img5/tcp_xmasscan_filtered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/tcp_xmasscan_open_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        ![2](img5/tcp_xmasscan_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_tcp_xmasscan_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_tcp_xmasscan_filtered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_tcp_xmasscan_open_atk.png)
+
+#### 4. TCP fin scan
+##### I.编程实现
+- ##### 代码
+    ```bash
+    #文件：tcp_fin_scan.py
+
+    #! /usr/bin/python
+
+    import logging
+    logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+    from scapy.all import *
+
+    dst_ip = "172.16.111.124"
+    src_port = RandShort()
+    dst_port = 8083
+
+    tcpfinscan_pkts = sr1(
+        IP(dst=dst_ip)/TCP(dport=dst_port, flags="F"), timeout=10)
+    if tcpfinscan_pkts is None:
+        print("Open|Filtered")
+    elif(tcpfinscan_pkts.haslayer(TCP)):
+        if(tcpfinscan_pkts.getlayer(TCP).flags == 0x14):
+            print("Closed")
+    elif(tcpfinscan_pkts.haslayer(ICMP)):
+        if(int(tcpfinscan_pkts.getlayer(ICMP).type) == 3 and int(tcpfinscan_pkts.getlayer(ICMP).code) in [1, 2, 3, 9, 10, 13]):
+            print("Filtered")
+    ```
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/tcp_finscan_closed_atk.png)
+        kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/tcp_finscan_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/tcp_finscan_filtered_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        ![2](img5/tcp_finscan_filtered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/tcp_finscan_open_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        ![2](img5/tcp_finscan_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_tcp_finscan_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_tcp_finscan_filtered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_tcp_finscan_open_atk.png)
+
+#### 5. TCP null scan
+##### I.编程实现
+- ##### 代码
+    ```bash
+    #文件：tcp_null_scan.py
+
+    #! /usr/bin/python
+
+    import logging
+    logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+    from scapy.all import *
+
+    dst_ip = "172.16.111.124"
+    src_port = RandShort()
+    dst_port = 8083
+
+    tcpnullscan_pkts = sr1(
+        IP(dst=dst_ip)/TCP(dport=dst_port, flags=""), timeout=10)
+    if tcpnullscan_pkts is None:
+        print("Open|Filtered")
+    elif(tcpnullscan_pkts.haslayer(TCP)):
+        if(tcpnullscan_pkts.getlayer(TCP).flags == 0x14):
+            print("Closed")
+    elif(tcpnullscan_pkts.haslayer(ICMP)):
+        if(int(tcpnullscan_pkts.getlayer(ICMP).type) == 3 and int(tcpnullscan_pkts.getlayer(ICMP).code) in [1, 2, 3, 9, 10, 13]):
+            print("Filtered")
+    ```
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/tcp_null_closed_atk.png)
+        kali_victim1-wireshark：收到RST/ACK数据包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/tcp_null_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/tcp_null_filtered_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        ![2](img5/tcp_null_filtered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/tcp_null_open_atk.png)
+        kali_victim1-wireshark：只收到了一个TCP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        ![2](img5/tcp_null_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_tcp_null_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_tcp_null_filtered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_tcp_null_open_atk.png)
+
+#### 6. TCP UDP scan
+##### I.编程实现
+- ##### 代码
+    ```bash
+    #文件：udp_scan.py
+
+    #! /usr/bin/python
+
+    import logging
+    logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
+    from scapy.all import *
+
+    dst_ip = "172.16.111.124"
+    src_port = RandShort()
+    dst_port = 53
+    dst_timeout = 10
+
+    def udp_scan(dst_ip,dst_port,dst_timeout):
+        udp_scan_resp = sr1(IP(dst=dst_ip)/UDP(dport=dst_port), timeout=dst_timeout)
+        if(udp_scan_resp is None):
+            print("Open|Filtered")
+        elif(udp_scan_resp.haslayer(UDP)):
+            print("Open")
+        elif(udp_scan_resp.haslayer(ICMP)):
+            if(int(udp_scan_resp.getlayer(ICMP).type) == 3 and int(udp_scan_resp.getlayer(ICMP).code) == 3):
+                print("Closed")
+            elif(int(udp_scan_resp.getlayer(ICMP).type) == 3 and int(udp_scan_resp.getlayer(ICMP).code) in [1, 2, 9, 10, 13]):
+                print("Filtered")
+            elif(udp_scan_resp.haslayer(IP) and udp_scan_resp.getlayer(IP).proto == IP_PROTOS.udp)
+                print("Open")
+
+    udp_scan(dst_ip,dst_port,dst_timeout)
+    ```
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/udp_closed_atk.png)
+        kali_victim1-wireshark：收到ICMP“端口不可达”的包，证明端口处于关闭⛔状态，符合预期。
+        ![2](img5/udp_closed_ws.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/udp_filtered_atk.png)
+        kali_victim1-wireshark：只收到了一个UDP包，且靶机没有响应，证明端口处于过滤状态⚠，与预期相符
+        ![2](img5/udp_filtered_ws.png) 
+    - ###### open
+        kali_attacker2
+        ![2](img5/udp_open_atk.png)
+        kali_victim1-wireshark：只收到了一个UDP包，且靶机没有响应，证明端口处于开放✅状态，符合预期。
+        ![2](img5/udp_open_ws.png) 
+##### II.nmap实现
+- ##### 结果
+    - ###### closed
+        kali_attacker2
+        ![2](img5/nmap_udp_closed_atk.png)
+    - ###### filtered
+        kali_attacker2
+        ![2](img5/nmap_udp_filtered_atk.png)
+    - ###### open
+        kali_attacker2
+        ![2](img5/nmap_udp_open_atk.png)
 ## 实验问题与解决方案
-```bash
-#安装dnsmasq服务以开启udp端口
+#### UDP端口无法打开
+- 问题：在用UDPscan或者nmap复刻时都发现，如果kali_victim1只输入`sudo ufw enable && ufw allow 53/udp`,结果仍显示端口关闭/端口不可达。下图为开启端口后出现的结果：
+    ![2](img5/error1_udp_open_atk.png)
+- 解决方案：因为DNS服务基于UDP，在53端口提供服务，所以需要安装dnsmasq服务以开启udp端口。
+    ```bash
     sudo apt install dnsmasq
     sudo systemctl start dnsmasq
-```
+    ```
+
 ## 参考资料
 - [第五章 网络扫描](https://c4pr1c3.github.io/cuc-ns/chap0x05/main.html)
 - [2020-ns-public-Crrrln](https://github.com/CUCCS/2020-ns-public-Crrrln/blob/chap0x05/chap0x05/exp5.md)
 - [2021-ns-public-Tbc-tang](https://github.com/CUCCS/2021-ns-public-Tbc-tang/blob/chap0x05/0x05.md)
 - [Kali Linux渗透测试之端口扫描（一）——UDP、TCP、隐蔽端口扫描、全连接端口扫描](https://blog.csdn.net/qq_38684504/article/details/89298654)
 - [Kali-linux查看打开的端口](https://www.cnblogs.com/student-programmer/p/6727732.html)
+- [Dnsmasq 部署 DNS 服务](https://zhuanlan.zhihu.com/p/336459065)
